@@ -1,33 +1,28 @@
-Open Source docxtemplater image module
-==========================================
+# Open Source docxtemplater image module
+
 This repository holds an maintained version of docxtemplater image module.
 
 This package is open source. There is also a [paid version](https://docxtemplater.com/modules/image/) maintained by docxtemplater author.
 
 Note this version is compatible with docxtemplater 3.x.
 
-Installation
--------------
+## Installation
+
 You first need to install docxtemplater by following its [installation guide](https://docxtemplater.readthedocs.io/en/latest/installation.html).
 
 For Node.js install this package:
+
 ```bash
-npm install docxtemplater-image-module-free
+npm i docxtemplater-image
+# or
+yarn docxtemplater-image
 ```
 
-For the browser find builds in `build/` directory.
+## Usage
 
-Alternatively, you can create your own build from the sources:
-```bash
-npm run compile
-npm run browserify
-npm run uglify
-```
-
-Usage
------
 Assuming your **docx** or **pptx** template contains only the text `{%image}`:
-```javascript
+
+```js
 //Node.js example
 var ImageModule = require('open-docxtemplater-image-module');
 
@@ -69,6 +64,7 @@ fs.writeFile("test.docx",buffer);
 ```
 
 Some notes regarding templates:
+
 * **docx** files: the placeholder `{%image}` must be in a dedicated paragraph.
 * **pptx** files: the placeholder `{%image}` must be in a dedicated text cell.
 
@@ -145,11 +141,12 @@ In the browser, this shows how to get the image asynchronously :
 </html>
 ```
 
-Centering images
-----------------
+## Centering images
+
 You can center all images by setting the global switch to true `opts.centered = true`.
 
 If you would like to choose which images should be centered one by one:
+
 * Set the global switch to false `opts.centered = false`.
 * Use `{%image}` for images that shouldn't be centered.
 * Use `{%%image}` for images that you would like to see centered.
@@ -158,7 +155,7 @@ In **pptx** generated documents, images are centered vertically and horizontally
 
 ## Async support
 
-It is possible to get images asynchronously by returning a Promise in the getImage function and use the docxtemplater async api : http://docxtemplater.readthedocs.io/en/latest/async.html
+It is possible to get images asynchronously by returning a Promise in the getImage function and use the docxtemplater async api: [http://docxtemplater.readthedocs.io/en/latest/async.html](http://docxtemplater.readthedocs.io/en/latest/async.html)
 
 You can also return a promise in the getSize function if you want to resolve the size asynchronously (like in the browser example above).
 
@@ -266,7 +263,7 @@ function getHttpData(url, callback) {
 
 You can have customizable image loader using the template's placeholder name.
 
-```
+```js
 opts.getImage = function (tagValue, tagName) {
     if(tagName === 'logo')
         return fs.readFileSync(__dirname + '/logos/' + tagValue);
@@ -277,7 +274,7 @@ opts.getImage = function (tagValue, tagName) {
 
 The same thing can be used to customize image size.
 
-```
+```js
 opts.getSize = function (img, tagValue, tagName) {
     if(tagName === 'logo')
         return [100, 100];
@@ -321,5 +318,3 @@ const imageOpts = {
 };
 doc.attachModule(new ImageModule(imageOpts));
 ```
-
- 
