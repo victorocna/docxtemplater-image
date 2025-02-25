@@ -1,5 +1,6 @@
-/*.docx
-/*.pptx
+*.docx
+*.pptx
+*.tgz
 test/
 node_modules
 coverage/

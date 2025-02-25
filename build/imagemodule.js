@@ -9,7 +9,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var templates = require("./templates");
 var DocUtils = require("docxtemplater").DocUtils;
-var DOMParser = require("xmldom").DOMParser;
+var DOMParser = require("@xmldom/xmldom").DOMParser;
 
 function isNaN(number) {
 	return !(number === number);
@@ -381,7 +381,7 @@ module.exports = {
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var _require = require("xmldom"),
+var _require = require("@xmldom/xmldom"),
     DOMParser = _require.DOMParser,
     XMLSerializer = _require.XMLSerializer;
 
