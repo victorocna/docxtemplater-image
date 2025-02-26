@@ -1,5 +1,7 @@
 # Open Source docxtemplater image module
 
+This is a fork of [original package](https://www.npmjs.com/package/docxtemplater-image-module-free) with up to date dependencies
+
 This repository holds an maintained version of docxtemplater image module.
 
 This package is open source. There is also a [paid version](https://docxtemplater.com/modules/image/) maintained by docxtemplater author.
@@ -15,7 +17,7 @@ For Node.js install this package:
 ```bash
 npm i docxtemplater-image
 # or
-yarn docxtemplater-image
+yarn add docxtemplater-image
 ```
 
 ## Usage
