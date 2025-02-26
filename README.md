@@ -1,6 +1,6 @@
 # Open Source docxtemplater image module
 
-This is a fork of [docxtemplater-image-module-free](https://www.npmjs.com/package/docxtemplater-image-module-free) with up to date dependencies
+This is a fork of [docxtemplater-image-module-free](https://www.npmjs.com/package/docxtemplater-image-module-free) with up to date dependencies.
 
 This repository holds an maintained version of docxtemplater image module.
 
