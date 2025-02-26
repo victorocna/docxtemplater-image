@@ -1,6 +1,6 @@
 # Open Source docxtemplater image module
 
-This is a fork of [original package](https://www.npmjs.com/package/docxtemplater-image-module-free) with up to date dependencies
+This is a fork of [docxtemplater-image-module-free](https://www.npmjs.com/package/docxtemplater-image-module-free) with up to date dependencies
 
 This repository holds an maintained version of docxtemplater image module.
 
@@ -26,120 +26,116 @@ Assuming your **docx** or **pptx** template contains only the text `{%image}`:
 
 ```js
 //Node.js example
-var ImageModule = require('open-docxtemplater-image-module');
+var ImageModule = require("open-docxtemplater-image-module");
 
 //Below the options that will be passed to ImageModule instance
-var opts = {}
+var opts = {};
 opts.centered = false; //Set to true to always center images
 opts.fileType = "docx"; //Or pptx
 
 //Pass your image loader
-opts.getImage = function(tagValue, tagName) {
-    //tagValue is 'examples/image.png'
-    //tagName is 'image'
-    return fs.readFileSync(tagValue);
-}
+opts.getImage = function (tagValue, tagName) {
+  //tagValue is 'examples/image.png'
+  //tagName is 'image'
+  return fs.readFileSync(tagValue);
+};
 
 //Pass the function that return image size
-opts.getSize = function(img, tagValue, tagName) {
-    //img is the image returned by opts.getImage()
-    //tagValue is 'examples/image.png'
-    //tagName is 'image'
-    //tip: you can use node module 'image-size' here
-    return [150, 150];
-}
+opts.getSize = function (img, tagValue, tagName) {
+  //img is the image returned by opts.getImage()
+  //tagValue is 'examples/image.png'
+  //tagName is 'image'
+  //tip: you can use node module 'image-size' here
+  return [150, 150];
+};
 
 var imageModule = new ImageModule(opts);
 
 var zip = new JSZip(content);
 var doc = new Docxtemplater()
-    .attachModule(imageModule)
-    .loadZip(zip)
-    .setData({image: 'examples/image.png'})
-    .render();
+  .attachModule(imageModule)
+  .loadZip(zip)
+  .setData({ image: "examples/image.png" })
+  .render();
 
-var buffer = doc
-        .getZip()
-        .generate({type:"nodebuffer"});
+var buffer = doc.getZip().generate({ type: "nodebuffer" });
 
-fs.writeFile("test.docx",buffer);
+fs.writeFile("test.docx", buffer);
 ```
 
 Some notes regarding templates:
 
-* **docx** files: the placeholder `{%image}` must be in a dedicated paragraph.
-* **pptx** files: the placeholder `{%image}` must be in a dedicated text cell.
+- **docx** files: the placeholder `{%image}` must be in a dedicated paragraph.
+- **pptx** files: the placeholder `{%image}` must be in a dedicated text cell.
 
 In the browser, this shows how to get the image asynchronously :
 
 ```html
 <html>
-<script src="node_modules/docxtemplater/build/docxtemplater.js"></script>
-<script src="node_modules/jszip/dist/jszip.js"></script>
-<script src="node_modules/jszip/vendor/FileSaver.js"></script>
-<script src="node_modules/jszip-utils/dist/jszip-utils.js"></script>
-<script src="build/imagemodule.js"></script>
-<script>
-  JSZipUtils.getBinaryContent('examples/image-example.docx', function (error, content) {
-    if (error) {
-      console.error(error);
-      return;
-    }
-    var opts = {}
-    opts.centered = false;
-    opts.getImage = function (tagValue, tagName) {
-      return new Promise(function (resolve, reject) {
-        JSZipUtils.getBinaryContent(tagValue, function (error, content) {
-          if (error) {
-            return reject(error);
-          }
-          return resolve(content);
+  <script src="node_modules/docxtemplater/build/docxtemplater.js"></script>
+  <script src="node_modules/jszip/dist/jszip.js"></script>
+  <script src="node_modules/jszip/vendor/FileSaver.js"></script>
+  <script src="node_modules/jszip-utils/dist/jszip-utils.js"></script>
+  <script src="build/imagemodule.js"></script>
+  <script>
+    JSZipUtils.getBinaryContent("examples/image-example.docx", function (error, content) {
+      if (error) {
+        console.error(error);
+        return;
+      }
+      var opts = {};
+      opts.centered = false;
+      opts.getImage = function (tagValue, tagName) {
+        return new Promise(function (resolve, reject) {
+          JSZipUtils.getBinaryContent(tagValue, function (error, content) {
+            if (error) {
+              return reject(error);
+            }
+            return resolve(content);
+          });
         });
-      });
-    }
-    opts.getSize = function (img, tagValue, tagName) {
-      // FOR FIXED SIZE IMAGE :
-      return [150, 150];
+      };
+      opts.getSize = function (img, tagValue, tagName) {
+        // FOR FIXED SIZE IMAGE :
+        return [150, 150];
 
-      // FOR IMAGE COMING FROM A URL (IF TAGVALUE IS AN ADRESS) :
-      // To use this feature, you have to be using docxtemplater async
-      // (if you are calling setData(), you are not using async).
-      return new Promise(function (resolve, reject) {
-        var image = new Image();
-        image.src = url;
-        image.onload = function () {
-          resolve([image.width, image.height]);
-        };
-        image.onerror = function (e) {
-          console.log('img, tagValue, tagName : ', img, tagValue, tagName);
-          alert("An error occured while loading " + tagValue);
-          reject(e);
-        }
-      });
-    }
+        // FOR IMAGE COMING FROM A URL (IF TAGVALUE IS AN ADRESS) :
+        // To use this feature, you have to be using docxtemplater async
+        // (if you are calling setData(), you are not using async).
+        return new Promise(function (resolve, reject) {
+          var image = new Image();
+          image.src = url;
+          image.onload = function () {
+            resolve([image.width, image.height]);
+          };
+          image.onerror = function (e) {
+            console.log("img, tagValue, tagName : ", img, tagValue, tagName);
+            alert("An error occured while loading " + tagValue);
+            reject(e);
+          };
+        });
+      };
 
-    var imageModule = new ImageModule(opts);
+      var imageModule = new ImageModule(opts);
 
-    var zip = new JSZip(content);
-    var doc = new docxtemplater()
-      .loadZip(zip)
-      .attachModule(imageModule)
-      .compile();
+      var zip = new JSZip(content);
+      var doc = new docxtemplater().loadZip(zip).attachModule(imageModule).compile();
 
-    doc.resolveData({
-      image: 'examples/image.png'
-    }).then(function () {
-      console.log('ready');
-      doc.render();
-      var out = doc.getZip().generate({
-        type: "blob",
-        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      });
-      saveAs(out, "generated.docx");
-    })
-  });
-</script>
-
+      doc
+        .resolveData({
+          image: "examples/image.png",
+        })
+        .then(function () {
+          console.log("ready");
+          doc.render();
+          var out = doc.getZip().generate({
+            type: "blob",
+            mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          });
+          saveAs(out, "generated.docx");
+        });
+    });
+  </script>
 </html>
 ```
 
@@ -149,9 +145,9 @@ You can center all images by setting the global switch to true `opts.centered = 
 
 If you would like to choose which images should be centered one by one:
 
-* Set the global switch to false `opts.centered = false`.
-* Use `{%image}` for images that shouldn't be centered.
-* Use `{%%image}` for images that you would like to see centered.
+- Set the global switch to false `opts.centered = false`.
+- Use `{%image}` for images that shouldn't be centered.
+- Use `{%%image}` for images that you would like to see centered.
 
 In **pptx** generated documents, images are centered vertically and horizontally relative to the parent cell.
 
@@ -175,7 +171,7 @@ const JSZip = require("jszip");
 const content = fs.readFileSync("demo_template.docx");
 
 const data = {
-  image: "https://docxtemplater.com/xt-pro.png"
+  image: "https://docxtemplater.com/xt-pro.png",
 };
 
 const opts = {};
@@ -211,22 +207,17 @@ opts.getSize = function (img, tagValue, tagName) {
 const imageModule = new ImageModule(opts);
 
 const zip = new JSZip(content);
-const doc = new DocxTemplater()
-  .loadZip(zip)
-  .attachModule(imageModule)
-  .compile();
+const doc = new DocxTemplater().loadZip(zip).attachModule(imageModule).compile();
 
 doc
   .resolveData(data)
   .then(function () {
     console.log("data resolved");
     doc.render();
-    const buffer = doc
-      .getZip()
-      .generate({
-        type: "nodebuffer",
-        compression: "DEFLATE"
-      });
+    const buffer = doc.getZip().generate({
+      type: "nodebuffer",
+      compression: "DEFLATE",
+    });
 
     fs.writeFileSync("test.docx", buffer);
     console.log("rendered");
@@ -239,11 +230,7 @@ function getHttpData(url, callback) {
   https
     .request(url, function (response) {
       if (response.statusCode !== 200) {
-        return callback(
-          new Error(
-            `Request to ${url} failed, status code: ${response.statusCode}`
-          )
-        );
+        return callback(new Error(`Request to ${url} failed, status code: ${response.statusCode}`));
       }
 
       const data = new Stream();
@@ -267,10 +254,9 @@ You can have customizable image loader using the template's placeholder name.
 
 ```js
 opts.getImage = function (tagValue, tagName) {
-    if(tagName === 'logo')
-        return fs.readFileSync(__dirname + '/logos/' + tagValue);
+  if (tagName === "logo") return fs.readFileSync(__dirname + "/logos/" + tagValue);
 
-    return fs.readFileSync(__dirname + '/images/' + tagValue);
+  return fs.readFileSync(__dirname + "/images/" + tagValue);
 };
 ```
 
@@ -278,10 +264,9 @@ The same thing can be used to customize image size.
 
 ```js
 opts.getSize = function (img, tagValue, tagName) {
-    if(tagName === 'logo')
-        return [100, 100];
+  if (tagName === "logo") return [100, 100];
 
-    return [300, 300];
+  return [300, 300];
 };
 ```
 
